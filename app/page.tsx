@@ -1,101 +1,236 @@
-import Image from "next/image";
+'use client';
+
+import ClassicPorscheCanvas from '@/components/ClassicPorscheCanvas';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const sequenceRef = useRef<HTMLDivElement>(null);
+  
+  // Track scroll specifically across the 400vh sequence wrapper
+  const { scrollYProgress: sequenceProgress } = useScroll({ 
+    target: sequenceRef, 
+    offset: ["start start", "end end"] 
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  // Vertical Banjo Line Scroll Indicator Setup
+  const indicatorHeight = useSpring(useTransform(sequenceProgress, [0, 1], ['0%', '100%']), {
+    stiffness: 50,
+    damping: 20
+  });
+
+  return (
+    <main style={{ backgroundColor: 'var(--background)', position: 'relative' }}>
+      {/* 475vh Wrapper for Scrolling Sequence (Beats + Gap) */}
+      <div ref={sequenceRef} style={{ position: 'relative', width: '100%', zIndex: 10 }}>
+        
+        {/* Sticky Canvas and Indicator Wrapper */}
+        <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%', overflow: 'hidden', zIndex: 0 }}>
+          {/* 3D Canvas Background */}
+          <ClassicPorscheCanvas scrollProgress={sequenceProgress} />
+
+          {/* Global Scroll Indicator (Banjo spoke style) */}
+          <div style={{
+            position: 'absolute',
+            left: '2rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            height: '40vh',
+            width: '2px',
+            backgroundColor: '#222',
+            zIndex: 20,
+            display: 'flex',
+            alignItems: 'flex-start'
+          }}>
+            <motion.div 
+              style={{
+                width: '100%',
+                height: indicatorHeight,
+                backgroundColor: 'var(--accent)'
+              }}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {/* Text sections that scroll over the sticky canvas */}
+        <div style={{ position: 'relative', zIndex: 10, marginTop: '-100vh' }}>
+        
+        {/* BEAT A: 0 - 25vh approx */}
+        <section style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 1 }}
+            viewport={{ amount: 0.4, once: false }}
+            style={{ textAlign: 'center' }}
+          >
+            <h1 style={{ fontSize: '4rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Porsche 365a</h1>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1.2rem', letterSpacing: '0.1em', opacity: 0.8 }}>
+              The birth of a silhouette.
+            </p>
+          </motion.div>
+        </section>
+
+        {/* BEAT B: 100vh - 200vh */}
+        <section style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '10vw' }}>
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 1 }}
+            viewport={{ amount: 0.4, once: false }}
+            style={{ textAlign: 'left' }}
+          >
+            <h2 style={{ fontSize: '3.5rem', marginBottom: '0.5rem' }}>HAND-FORMED</h2>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1.1rem', letterSpacing: '0.05em', opacity: 0.8 }}>
+              Curves shaped by air and aluminum.
+            </p>
+          </motion.div>
+        </section>
+
+        {/* BEAT C: 200vh - 300vh */}
+        <section style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '10vw' }}>
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 1 }}
+            viewport={{ amount: 0.4, once: false }}
+            style={{ textAlign: 'right' }}
+          >
+            <h2 style={{ fontSize: '3.5rem', marginBottom: '0.5rem' }}>1600 SUPER</h2>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1.1rem', letterSpacing: '0.05em', opacity: 0.8 }}>
+              75 horsepower. Infinite soul.
+            </p>
+          </motion.div>
+        </section>
+
+        {/* BEAT D: 300vh - 400vh */}
+        <section style={{ height: '100vh', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '15vh' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 1 }}
+            viewport={{ amount: 0.7, once: false }}
+            style={{ textAlign: 'center' }}
+          >
+            <h2 style={{ fontSize: '4rem', marginBottom: '1.5rem', color: 'var(--foreground)' }}>TIMELESS</h2>
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: 'var(--foreground)', color: 'var(--background)' }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '1rem',
+                letterSpacing: '0.1em',
+                padding: '1rem 3rem',
+                border: '1px solid var(--foreground)',
+                backgroundColor: 'transparent',
+                color: 'var(--foreground)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              EXPERIENCE THE HERITAGE
+            </motion.button>
+          </motion.div>
+        </section>
+
+        {/* PAUSE / GAP SECTION */}
+        {/* This creates the requested gap so the fully assembled car stays on screen 
+            by itself before the archival details scroll up. */}
+        <div style={{ height: '75vh', width: '100%', position: 'relative', zIndex: 10 }} />
+
+      </div>
+      </div>
+
+      {/* INFORMATION & SPECIFICATION SECTION */}
+      <section style={{ 
+        position: 'relative', 
+        zIndex: 20, 
+        backgroundColor: 'var(--background)', 
+        color: 'var(--foreground)', 
+        minHeight: '100vh', 
+        padding: '15vh 10vw',
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center' 
+      }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <div style={{ marginBottom: '6rem' }}>
+            <h5 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '1rem' }}>
+              The Archival Records
+            </h5>
+            <h2 style={{ fontSize: '3.5rem', lineHeight: '1.2', fontWeight: '400', maxWidth: '800px' }}>
+              The Blueprint of a Legend
+            </h2>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', marginBottom: '8rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '4rem' }}>
+            
+            <div style={{ flex: '1 1 400px' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>Heritage Details</h3>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', lineHeight: '1.8', opacity: 0.7, fontWeight: '300' }}>
+                The Porsche 356 was the company's first production automobile. The "A" model, introduced late in 1955, brought numerous refinements to the suspension and a curved panoramic windshield. Often celebrated for its lightweight agility, the 356 established the rear-engine philosophy that defines Porsche to this day.
+              </p>
+            </div>
+            
+            <div style={{ flex: '1 1 400px' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>Market Valuation</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontFamily: 'var(--font-sans)', fontSize: '1rem', lineHeight: '1.8', opacity: 0.7, fontWeight: '300' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <span>Original Base Price (1955)</span>
+                  <span>~$3,000</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <span>Concours Restored (Present)</span>
+                  <span>$250,000+</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem' }}>
+                  <span>Auction Record (Speedster)</span>
+                  <span>&gt;$500,000</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <motion.a 
+              href="https://www.porsche.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              whileHover={{ backgroundColor: 'transparent', color: 'var(--foreground)' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.9rem',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                padding: '1.2rem 3rem',
+                backgroundColor: 'var(--foreground)',
+                color: 'var(--background)',
+                border: '1px solid var(--foreground)',
+                textDecoration: 'none',
+                fontWeight: '500',
+                transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
+              }}
+            >
+              VISIT OFFICIAL PORSCHE WEBSITE
+            </motion.a>
+          </div>
+        </motion.div>
+      </section>
+
+    </main>
   );
 }
