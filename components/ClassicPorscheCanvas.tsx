@@ -44,11 +44,21 @@ export default function ClassicPorscheCanvas({ scrollProgress }: { scrollProgres
       const img = new Image();
       // Format 001 to 168
       const formattedNumber = i.toString().padStart(3, '0');
-      img.src = `/frames/ezgif-frame-${formattedNumber}.png`;
-      img.onload = () => {
+      img.src = `/sequence356/ezgif-frame-${formattedNumber}.png`;
+      
+      const handleLoad = () => {
         loadedCount++;
         setImagesLoaded(loadedCount);
       };
+
+      img.onload = handleLoad;
+      // If an adblocker blocks a frame or it 404s, we MUST still increment loadedCount
+      // otherwise the ignition sequence gets stuck forever at 99%.
+      img.onerror = () => {
+        console.warn(`Failed to precisely load frame: ${img.src}`);
+        handleLoad();
+      };
+      
       loadedImages.push(img);
     }
     setImages(loadedImages);
