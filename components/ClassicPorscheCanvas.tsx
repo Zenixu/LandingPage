@@ -44,7 +44,7 @@ export default function ClassicPorscheCanvas({ scrollProgress }: { scrollProgres
       const img = new Image();
       // Format 001 to 168
       const formattedNumber = i.toString().padStart(3, '0');
-      img.src = `/sequence356/ezgif-frame-${formattedNumber}.png`;
+      img.src = `/sequence356/ezgif-frame-${formattedNumber}.webp`;
       
       const handleLoad = () => {
         loadedCount++;
