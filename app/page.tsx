@@ -178,7 +178,7 @@ export default function Home() {
             <div style={{ flex: '1 1 400px' }}>
               <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>Heritage Details</h3>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', lineHeight: '1.8', opacity: 0.7, fontWeight: '300' }}>
-                The Porsche 356 was the company's first production automobile. The "A" model, introduced late in 1955, brought numerous refinements to the suspension and a curved panoramic windshield. Often celebrated for its lightweight agility, the 356 established the rear-engine philosophy that defines Porsche to this day.
+                The Porsche 356 was the company&apos;s first production automobile. The &quot;A&quot; model, introduced late in 1955, brought numerous refinements to the suspension and a curved panoramic windshield. Often celebrated for its lightweight agility, the 356 established the rear-engine philosophy that defines Porsche to this day.
               </p>
             </div>
             
